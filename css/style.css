@@ -1,0 +1,32 @@
+/* @CODE:GAME-001:RENDER - Responsive canvas styling */
+body, html {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+canvas {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+}
+
+@media screen and (max-width: 600px) {
+  canvas {
+    /* Mobile-specific adjustments */
+    transform: scale(0.9);
+  }
+}
+
+/* Performance overlay styling */
+.performance-overlay {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 5px;
+  font-family: monospace;
+}

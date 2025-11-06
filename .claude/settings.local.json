@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/tkand/Desktop/development/Hanoa/.claude/agents/**)",
+      "Bash(npm install)",
+      "Bash(npm test)",
+      "Bash(npm install:*)",
+      "Bash(git init:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

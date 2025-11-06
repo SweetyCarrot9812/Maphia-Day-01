@@ -1,0 +1,20 @@
+{
+  "project": {
+    "name": "Portfolio",
+    "mode": "personal",
+    "locale": "en",
+    "language": "javascript",
+    "language_detection": {
+      "detected_language": "javascript",
+      "detection_method": "docs_analysis",
+      "confidence": 0.95,
+      "markers": ["vanilla_js", "canvas_api", "game_engine", "mvc_pattern"],
+      "confirmed_by": "alfred"
+    },
+    "optimized": true
+  },
+  "language": {
+    "conversation_language": "en",
+    "conversation_language_name": "English"
+  }
+}
