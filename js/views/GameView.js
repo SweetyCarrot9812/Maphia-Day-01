@@ -1,4 +1,4 @@
-class GameView {
+export class GameView {
   constructor(canvas) {
     // @CODE:GAME-001:RENDER - Canvas rendering engine initialization
     this.canvas = canvas;
