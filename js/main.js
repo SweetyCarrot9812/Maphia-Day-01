@@ -45,6 +45,13 @@ class Game {
       this.view.hideGameOverScreen();
     });
 
+    // Resume Button (Pause Screen)
+    const resumeButton = document.getElementById('resumeButton');
+    resumeButton.addEventListener('click', () => {
+      this.model.setState('playing');
+      this.view.hidePauseScreen();
+    });
+
     // Performance Overlay Toggle (F key)
     window.addEventListener('keydown', (event) => {
       if (event.key === 'f' || event.key === 'F') {

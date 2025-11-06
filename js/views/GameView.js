@@ -7,6 +7,7 @@ export class GameView {
     this.performanceOverlay = {
       fps: 0,
       memoryUsage: 0,
+      visible: false,
     };
   }
 
@@ -53,6 +54,8 @@ export class GameView {
 
   renderPerformanceOverlay() {
     // @CODE:GAME-001:RENDER - Performance metrics rendering
+    if (!this.performanceOverlay.visible) return;
+
     this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
     this.ctx.fillRect(10, 10, 150, 80);
     this.ctx.fillStyle = 'white';
@@ -64,5 +67,40 @@ export class GameView {
   clearCanvas() {
     // @CODE:GAME-001:RENDER - Clear canvas for next frame
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  // @CODE:GAME-001:RENDER - Screen management methods
+  showStartScreen() {
+    const startScreen = document.getElementById('startScreen');
+    if (startScreen) startScreen.style.display = 'flex';
+  }
+
+  hideStartScreen() {
+    const startScreen = document.getElementById('startScreen');
+    if (startScreen) startScreen.style.display = 'none';
+  }
+
+  showPauseScreen() {
+    const pauseScreen = document.getElementById('pauseScreen');
+    if (pauseScreen) pauseScreen.style.display = 'flex';
+  }
+
+  hidePauseScreen() {
+    const pauseScreen = document.getElementById('pauseScreen');
+    if (pauseScreen) pauseScreen.style.display = 'none';
+  }
+
+  showGameOverScreen() {
+    const gameOverScreen = document.getElementById('gameOverScreen');
+    if (gameOverScreen) gameOverScreen.style.display = 'flex';
+  }
+
+  hideGameOverScreen() {
+    const gameOverScreen = document.getElementById('gameOverScreen');
+    if (gameOverScreen) gameOverScreen.style.display = 'none';
+  }
+
+  togglePerformanceOverlay() {
+    this.performanceOverlay.visible = !this.performanceOverlay.visible;
   }
 }
