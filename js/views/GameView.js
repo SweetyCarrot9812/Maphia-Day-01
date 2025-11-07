@@ -30,14 +30,18 @@ export class GameView {
 
   async drawPlayer(x, y) {
     // @CODE:GAME-001:RENDER - Player sprite rendering
-    const playerSprite = await this.loadSprite('luffy', 'assets/sprites/luffy.png');
-    this.ctx.drawImage(playerSprite, x, y);
+    const playerSprite = await this.loadSprite('luffy', 'luffy.png');
+    if (playerSprite && playerSprite.complete && playerSprite.naturalWidth > 0) {
+      this.ctx.drawImage(playerSprite, x, y);
+    }
   }
 
   async drawObstacle(x, y) {
     // @CODE:GAME-001:RENDER - Obstacle sprite rendering
-    const obstacleSprite = await this.loadSprite('akainu', 'assets/sprites/akainu.png');
-    this.ctx.drawImage(obstacleSprite, x, y);
+    const obstacleSprite = await this.loadSprite('akainu', 'akainu.png');
+    if (obstacleSprite && obstacleSprite.complete && obstacleSprite.naturalWidth > 0) {
+      this.ctx.drawImage(obstacleSprite, x, y);
+    }
   }
 
   resizeCanvas(width, height) {
