@@ -19,9 +19,12 @@ body, html {
 /* Canvas */
 #gameCanvas {
   display: block;
-  margin: 0;
+  margin: 0 auto;
+  max-width: 1200px;
+  max-height: 800px;
   background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
   box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+  border-radius: 16px;
 }
 
 /* In-Game HUD */
