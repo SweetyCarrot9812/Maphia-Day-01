@@ -173,7 +173,7 @@ export class GameController {
   // @CODE:GAME-001:INPUT - Game State Control Methods
   startGame() {
     this.model.setState('playing');
-    this.view.showGameScreen();
+    this.view.hideStartScreen();
   }
 
   pauseGame() {
@@ -183,7 +183,7 @@ export class GameController {
 
   resumeGame() {
     this.model.setState('playing');
-    this.view.hideOverlays();
+    this.view.hidePauseScreen();
   }
 
   gameOver() {

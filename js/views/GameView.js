@@ -94,8 +94,12 @@ export class GameView {
     if (pauseScreen) pauseScreen.style.display = 'none';
   }
 
-  showGameOverScreen() {
+  showGameOverScreen(score = 0) {
     const gameOverScreen = document.getElementById('gameOverScreen');
+    const finalScore = document.getElementById('finalScore');
+    if (finalScore) {
+      finalScore.textContent = `점수: ${Math.floor(score)}`;
+    }
     if (gameOverScreen) gameOverScreen.style.display = 'flex';
   }
 

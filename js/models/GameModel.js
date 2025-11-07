@@ -20,7 +20,6 @@ export class GameModel {
     this._lastFrameTime = 0;
     this._frameCount = 0;
     this._fpsUpdateInterval = 1000; // Update FPS every second
-    this._boundGameLoop = this._gameLoop.bind(this);
 
     // @CODE:GAME-001:INPUT - Input-related model state
     this.player = {
@@ -46,13 +45,15 @@ export class GameModel {
     // State transition logic
     switch (newState) {
       case 'playing':
-        this.start();
+        if (!this.isRunning) {
+          this.isRunning = true;
+        }
         break;
       case 'paused':
-        this.stop();
+        this.isRunning = false;
         break;
       case 'gameover':
-        this.stop();
+        this.isRunning = false;
         this._updateHighScore();
         break;
     }
@@ -61,26 +62,21 @@ export class GameModel {
   }
 
   /**
-   * Start the game loop
+   * Start the game
    * @TAG:GAME-001:START
    */
   start() {
-    if (this.isRunning) return;
     this.isRunning = true;
-    this.score = 0;  // Reset score
-    this._lastFrameTime = performance.now();
-    this._frameCount = 0;
-    this._initializeObstacles(); // Reset obstacles
-    requestAnimationFrame(this._boundGameLoop);
+    this.score = 0;
+    this._initializeObstacles();
   }
 
   /**
-   * Stop the game loop
+   * Stop the game
    * @TAG:GAME-001:STOP
    */
   stop() {
     this.isRunning = false;
-    cancelAnimationFrame(this._rafId);
   }
 
   /**
@@ -187,31 +183,5 @@ export class GameModel {
     if (this.score > highScore) {
       localStorage.setItem('highScore', this.score);
     }
-  }
-
-  /**
-   * Core game loop with performance tracking
-   * @param {number} currentTime - Current timestamp
-   * @TAG:GAME-001:LOOP
-   * @private
-   */
-  _gameLoop(currentTime) {
-    if (!this.isRunning || this.state !== 'playing') return;
-
-    // Performance and FPS tracking
-    this._frameCount++;
-    const timeSinceLastFPSUpdate = currentTime - this._lastFrameTime;
-
-    if (timeSinceLastFPSUpdate >= this._fpsUpdateInterval) {
-      // Calculate actual FPS
-      this.fps = Math.round((this._frameCount * 1000) / timeSinceLastFPSUpdate);
-
-      // Reset tracking
-      this._lastFrameTime = currentTime;
-      this._frameCount = 0;
-    }
-
-    // Schedule next frame
-    this._rafId = requestAnimationFrame(this._boundGameLoop);
   }
 }

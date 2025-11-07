@@ -97,6 +97,11 @@ class Game {
       // Update game state
       this.controller.update(deltaTime);
 
+      // Check if game over after update
+      if (this.model.state === 'gameover') {
+        this.controller.gameOver();
+      }
+
       // Render game state
       this.controller.render();
     }
