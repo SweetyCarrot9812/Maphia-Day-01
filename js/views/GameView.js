@@ -76,36 +76,48 @@ export class GameView {
   // @CODE:GAME-001:RENDER - Screen management methods
   showStartScreen() {
     const startScreen = document.getElementById('startScreen');
+    const pauseButton = document.getElementById('pauseButton');
     if (startScreen) startScreen.style.display = 'flex';
+    if (pauseButton) pauseButton.style.display = 'none';
   }
 
   hideStartScreen() {
     const startScreen = document.getElementById('startScreen');
+    const pauseButton = document.getElementById('pauseButton');
     if (startScreen) startScreen.style.display = 'none';
+    if (pauseButton) pauseButton.style.display = 'block';
   }
 
   showPauseScreen() {
     const pauseScreen = document.getElementById('pauseScreen');
+    const pauseButton = document.getElementById('pauseButton');
     if (pauseScreen) pauseScreen.style.display = 'flex';
+    if (pauseButton) pauseButton.style.display = 'none';
   }
 
   hidePauseScreen() {
     const pauseScreen = document.getElementById('pauseScreen');
+    const pauseButton = document.getElementById('pauseButton');
     if (pauseScreen) pauseScreen.style.display = 'none';
+    if (pauseButton) pauseButton.style.display = 'block';
   }
 
   showGameOverScreen(score = 0) {
     const gameOverScreen = document.getElementById('gameOverScreen');
+    const pauseButton = document.getElementById('pauseButton');
     const finalScore = document.getElementById('finalScore');
     if (finalScore) {
       finalScore.textContent = `점수: ${Math.floor(score)}`;
     }
     if (gameOverScreen) gameOverScreen.style.display = 'flex';
+    if (pauseButton) pauseButton.style.display = 'none';
   }
 
   hideGameOverScreen() {
     const gameOverScreen = document.getElementById('gameOverScreen');
+    const pauseButton = document.getElementById('pauseButton');
     if (gameOverScreen) gameOverScreen.style.display = 'none';
+    if (pauseButton) pauseButton.style.display = 'block';
   }
 
   togglePerformanceOverlay() {
