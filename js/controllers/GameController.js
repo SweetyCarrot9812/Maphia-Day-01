@@ -52,11 +52,6 @@ export class GameController {
       await this.view.drawObstacle(obstacle.x, obstacle.y);
     }
 
-    // Update HUD
-    this.view.updateScore(this.model.score);
-    const highScore = localStorage.getItem('highScore') || 0;
-    this.view.updateHighScore(highScore);
-
     // Update and render performance overlay
     this.view.updatePerformanceOverlay(this.fps, this.getMemoryUsage());
     this.view.renderPerformanceOverlay();
@@ -183,7 +178,7 @@ export class GameController {
 
   pauseGame() {
     this.model.setState('paused');
-    this.view.showPauseScreen(this.model.score);
+    this.view.showPauseScreen();
   }
 
   resumeGame() {

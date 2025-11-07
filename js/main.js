@@ -34,7 +34,8 @@ class Game {
     // Pause Button
     const pauseButton = document.getElementById('pauseButton');
     pauseButton.addEventListener('click', () => {
-      this.controller.pauseGame();
+      this.model.setState('paused');
+      this.view.showPauseScreen();
     });
 
     // Restart Button (Game Over Screen)
@@ -60,16 +61,29 @@ class Game {
   }
 
   handleResize() {
-    // @CODE:GAME-001:RENDER - Responsive canvas resizing
-    const aspectRatio = 16 / 9; // Desired aspect ratio
-    let width = window.innerWidth;
-    let height = window.innerHeight;
+    // @CODE:GAME-001:RENDER - Responsive canvas resizing with max limits
+    const aspectRatio = 16 / 9;
+    const maxWidth = 1000;
+    const maxHeight = 600;
+
+    let width = Math.min(window.innerWidth * 0.9, maxWidth);
+    let height = Math.min(window.innerHeight * 0.9, maxHeight);
 
     // Maintain aspect ratio
     if (width / height > aspectRatio) {
       width = height * aspectRatio;
     } else {
       height = width / aspectRatio;
+    }
+
+    // Ensure we don't exceed max limits
+    if (width > maxWidth) {
+      width = maxWidth;
+      height = width / aspectRatio;
+    }
+    if (height > maxHeight) {
+      height = maxHeight;
+      width = height * aspectRatio;
     }
 
     this.canvas.width = width;
