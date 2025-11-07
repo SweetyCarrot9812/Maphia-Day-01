@@ -9,6 +9,9 @@ export class GameModel {
     // @TAG:GAME-001:STATE Initial game state
     this.state = 'ready';  // Expanded state tracking
     this.score = 0;
+    this.level = 1;  // Current level (1-99)
+    this.playTime = 0;  // Total play time in seconds
+    this.levelTimer = 0;  // Timer for level-up (resets every 30s)
     this.fps = 0;
     this.isRunning = false;
 
@@ -68,6 +71,9 @@ export class GameModel {
   start() {
     this.isRunning = true;
     this.score = 0;
+    this.level = 1;
+    this.playTime = 0;
+    this.levelTimer = 0;
     this._initializeObstacles();
   }
 
@@ -87,6 +93,9 @@ export class GameModel {
     this.player.x = this.canvasWidth / 2;
     this.player.y = this.canvasHeight - 100;
     this.score = 0;
+    this.level = 1;
+    this.playTime = 0;
+    this.levelTimer = 0;
     this._initializeObstacles();
     this.setState('ready');
   }
@@ -99,11 +108,24 @@ export class GameModel {
   update(deltaTime) {
     if (!this.isRunning || this.state !== 'playing') return;
 
+    // Update play time
+    const deltaSeconds = deltaTime / 1000;
+    this.playTime += deltaSeconds;
+    this.levelTimer += deltaSeconds;
+
+    // Level-up every 30 seconds (max level 99)
+    if (this.levelTimer >= 30 && this.level < 99) {
+      this.level++;
+      this.levelTimer = 0;
+    }
+
+    // Calculate score: time×10 + level bonus (every 5 levels = +250)
+    const timeScore = this.playTime * 10;
+    const levelBonus = Math.floor(this.level / 5) * 250;
+    this.score = timeScore + levelBonus;
+
     // Update obstacles
     this._updateObstacles(deltaTime);
-
-    // Increase score based on survival time
-    this.score += deltaTime / 1000;
 
     // Check collisions
     this._checkCollisions();
@@ -119,14 +141,42 @@ export class GameModel {
   }
 
   _spawnObstacle() {
-    const obstacleWidth = 50;
-    const obstacleHeight = 50;
+    // Randomly select obstacle type
+    const rand = Math.random();
+    let type, width, height, baseSpeed;
+
+    if (rand < 0.6) {
+      // 60% chance - Normal obstacle
+      type = 'normal';
+      width = 50;
+      height = 50;
+      baseSpeed = 3;
+    } else if (rand < 0.85) {
+      // 25% chance - Fast obstacle
+      type = 'fast';
+      width = 40;
+      height = 40;
+      baseSpeed = 6;
+    } else {
+      // 15% chance - Large obstacle
+      type = 'large';
+      width = 70;
+      height = 70;
+      baseSpeed = 2;
+    }
+
+    // Apply difficulty scaling based on level
+    // Speed increases by 0.1 per level, max 2x base speed
+    const speedMultiplier = Math.min(1 + (this.level - 1) * 0.1, 2.0);
+    const speed = baseSpeed * speedMultiplier;
+
     const obstacle = {
-      x: Math.random() * (this.canvasWidth - obstacleWidth),
-      y: -obstacleHeight,
-      width: obstacleWidth,
-      height: obstacleHeight,
-      speed: Math.random() * 5 + 2 // Random speed
+      x: Math.random() * (this.canvasWidth - width),
+      y: -height,
+      width: width,
+      height: height,
+      speed: speed,
+      type: type
     };
     this.obstacles.push(obstacle);
   }
@@ -142,8 +192,18 @@ export class GameModel {
       obstacle.y < this.canvasHeight
     );
 
-    // Spawn new obstacles periodically
-    if (Math.random() < 0.02) {
+    // Spawn new obstacles with level-based spawn rate
+    // Base spawn rate: 0.02 (2% per frame at 60fps)
+    // Increases by 0.005 per level, max 0.08 (8%)
+    const baseSpawnRate = 0.02;
+    const spawnRateIncrease = 0.005;
+    const maxSpawnRate = 0.08;
+    const currentSpawnRate = Math.min(
+      baseSpawnRate + (this.level - 1) * spawnRateIncrease,
+      maxSpawnRate
+    );
+
+    if (Math.random() < currentSpawnRate) {
       this._spawnObstacle();
     }
   }

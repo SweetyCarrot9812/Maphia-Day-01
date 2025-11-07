@@ -18,6 +18,7 @@ export class GameController {
     // Bind input event handlers
     this.handleKeyboardInput = this.handleKeyboardInput.bind(this);
     this.handleTouchInput = this.handleTouchInput.bind(this);
+    this.handleMouseInput = this.handleMouseInput.bind(this);
     this.initializeInputListeners();
   }
 
@@ -25,6 +26,9 @@ export class GameController {
   initializeInputListeners() {
     // Desktop/Keyboard Input
     window.addEventListener('keydown', this.handleKeyboardInput);
+
+    // Desktop/Mouse Input
+    window.addEventListener('mousemove', this.handleMouseInput);
 
     // Mobile/Touch Input
     window.addEventListener('touchstart', this.handleTouchInput);
@@ -49,7 +53,12 @@ export class GameController {
 
     // Render obstacles
     for (let obstacle of this.model.obstacles) {
-      await this.view.drawObstacle(obstacle.x, obstacle.y);
+      await this.view.drawObstacle(obstacle);
+    }
+
+    // Render HUD (score, level, time) during gameplay
+    if (this.model.state === 'playing') {
+      this.view.renderHUD(this.model.score, this.model.level, this.model.playTime);
     }
 
     // Update and render performance overlay
@@ -140,6 +149,45 @@ export class GameController {
     this.constrainPlayerPosition();
   }
 
+  // @CODE:GAME-001:INPUT - Mouse Input Handling
+  handleMouseInput(event) {
+    // Only process mouse input during active gameplay
+    if (this.model.state !== 'playing') return;
+
+    this.detectInputMethod(event);
+
+    const canvas = this.view.canvas;
+    const rect = canvas.getBoundingClientRect();
+
+    const mouseX = event.clientX - rect.left;
+    const mouseY = event.clientY - rect.top;
+
+    const inputRecord = {
+      type: 'mouse',
+      x: mouseX,
+      y: mouseY,
+      timestamp: performance.now()
+    };
+    this.inputHistory.push(inputRecord);
+
+    // Limit input history to last 20 inputs
+    if (this.inputHistory.length > 20) {
+      this.inputHistory.shift();
+    }
+
+    // Move player towards mouse position with smooth following
+    const player = this.model.player;
+    const deltaX = mouseX - player.x;
+    const deltaY = mouseY - player.y;
+
+    // Smooth mouse movement
+    const smoothingFactor = 0.15;
+    player.x += deltaX * smoothingFactor;
+    player.y += deltaY * smoothingFactor;
+
+    this.constrainPlayerPosition();
+  }
+
   // @CODE:GAME-001:INPUT - Player Position Boundary Constraint
   constrainPlayerPosition() {
     const player = this.model.player;
@@ -161,6 +209,8 @@ export class GameController {
       currentMethod = 'Keyboard';
     } else if (event instanceof TouchEvent) {
       currentMethod = 'Touch';
+    } else if (event instanceof MouseEvent) {
+      currentMethod = 'Mouse';
     }
 
     // Only log if method changed to avoid spam

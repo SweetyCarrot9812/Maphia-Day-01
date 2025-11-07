@@ -38,13 +38,24 @@ export class GameView {
     }
   }
 
-  async drawObstacle(x, y) {
-    // @CODE:GAME-001:RENDER - Obstacle sprite rendering with scaling
+  async drawObstacle(obstacle) {
+    // @CODE:GAME-001:RENDER - Obstacle sprite rendering with type-based sizing
     const obstacleSprite = await this.loadSprite('akainu', 'akainu.png');
     if (obstacleSprite && obstacleSprite.complete && obstacleSprite.naturalWidth > 0) {
-      const targetWidth = 50;  // Small size for obstacle
-      const targetHeight = 50;
-      this.ctx.drawImage(obstacleSprite, x, y, targetWidth, targetHeight);
+      this.ctx.drawImage(obstacleSprite, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+
+      // Optional: Add visual indicator for obstacle type
+      if (obstacle.type === 'fast') {
+        // Red border for fast obstacles
+        this.ctx.strokeStyle = 'red';
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+      } else if (obstacle.type === 'large') {
+        // Yellow border for large obstacles
+        this.ctx.strokeStyle = 'yellow';
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+      }
     }
   }
 
@@ -75,6 +86,36 @@ export class GameView {
   clearCanvas() {
     // @CODE:GAME-001:RENDER - Clear canvas for next frame
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  /**
+   * Render in-game HUD (score, level, time)
+   * @CODE:GAME-001:RENDER - Real-time HUD display
+   */
+  renderHUD(score, level, playTime) {
+    // Format time as MM:SS
+    const minutes = Math.floor(playTime / 60);
+    const seconds = Math.floor(playTime % 60);
+    const timeString = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+    // HUD styling
+    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+    this.ctx.font = 'bold 24px Arial';
+    this.ctx.textAlign = 'left';
+
+    // Score (top-left)
+    this.ctx.fillText(`점수: ${Math.floor(score)}`, 20, 40);
+
+    // Level (top-center)
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText(`레벨: ${level}`, this.canvas.width / 2, 40);
+
+    // Time (top-right)
+    this.ctx.textAlign = 'right';
+    this.ctx.fillText(`시간: ${timeString}`, this.canvas.width - 20, 40);
+
+    // Reset text align
+    this.ctx.textAlign = 'left';
   }
 
   // @CODE:GAME-001:RENDER - Screen management methods
