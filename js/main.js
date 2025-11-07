@@ -34,8 +34,7 @@ class Game {
     // Pause Button
     const pauseButton = document.getElementById('pauseButton');
     pauseButton.addEventListener('click', () => {
-      this.model.setState('paused');
-      this.view.showPauseScreen();
+      this.controller.pauseGame();
     });
 
     // Restart Button (Game Over Screen)
